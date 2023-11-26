@@ -3,7 +3,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 from django.core.exceptions import ValidationError
-from django.db import IntegrityError, models
+from django.db import models
 from django.contrib.auth.models import User
 
 
@@ -13,6 +13,10 @@ class Gender(models.enums.TextChoices):
     OTHER = 'other'
 
 class Person(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=255, db_index=True)
     gender = models.CharField(max_length=8, choices=Gender.choices, default=Gender.MALE)
     dob = models.DateField(null=True, blank=True, verbose_name='Date of birth')

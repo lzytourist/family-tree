@@ -9,6 +9,7 @@ djangorestframework = "*"
 djoser = "*"
 mysqlclient = "*"
 python-dateutil = "*"
+django-filter = "*"
 
 [dev-packages]
 
