@@ -141,5 +141,7 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    'id': 'username'
+    'USER_ID_FIELD': 'username'
 }
+
+APPEND_SLASH=False
