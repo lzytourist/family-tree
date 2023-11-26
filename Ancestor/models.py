@@ -1,4 +1,5 @@
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -20,8 +21,8 @@ class Person(models.Model):
     @property
     def age(self):
         if not self.dod:
-            return (date.today() - self.dob).days
-        return (self.dod - self.dob).days
+            return relativedelta(date.today(), self.dob).years
+        return relativedelta(self.dod, self.dob).years
     
     def __str__(self) -> str:
         return self.name
