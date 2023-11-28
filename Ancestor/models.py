@@ -1,10 +1,9 @@
-from collections.abc import Iterable
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Gender(models.enums.TextChoices):
@@ -14,7 +13,7 @@ class Gender(models.enums.TextChoices):
 
 class Person(models.Model):
     user = models.ForeignKey(
-        to=User,
+        to=get_user_model(),
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255, db_index=True)

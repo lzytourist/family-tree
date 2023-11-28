@@ -2,13 +2,14 @@ from rest_framework import serializers
 
 from .models import Person, ParentChildren
 
+
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
-        fields = ['name', 'gender', 'dob', 'dod', 'nationality', 'age']
-
+        fields = ['id', 'name', 'gender', 'dob', 'dod', 'nationality', 'age']
         extra_kwargs = {
-            'age': {'read_only': True}
+            'age': {'read_only': True},
+            'id': {'read_only': True}
         }
 
 class ParentChildrenSerializer(serializers.ModelSerializer):
