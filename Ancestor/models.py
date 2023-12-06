@@ -11,6 +11,7 @@ class Gender(models.enums.TextChoices):
     FEMALE = 'female'
     OTHER = 'other'
 
+
 class Person(models.Model):
     user = models.ForeignKey(
         to=get_user_model(),
@@ -28,13 +29,14 @@ class Person(models.Model):
         if not self.dod:
             return relativedelta(date.today(), self.dob).years
         return relativedelta(self.dod, self.dob).years
-    
+
     def __str__(self) -> str:
         return self.name
-    
+
     class Meta:
         verbose_name = 'Person'
         verbose_name_plural = 'People'
+
 
 class ParentChildren(models.Model):
     parent = models.ForeignKey(

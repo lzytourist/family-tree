@@ -14,7 +14,9 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = list_display
     list_filter = ["gender", "nationality"]
 
+
 admin.site.register(Person, PersonAdmin)
+
 
 class ParentChildrenAdmin(admin.ModelAdmin):
     model = ParentChildren
@@ -26,10 +28,13 @@ class ParentChildrenAdmin(admin.ModelAdmin):
 
     def get_parent(self, obj):
         return obj.parent.name
+
     get_parent.short_description = "Parent"
-    
+
     def get_children(self, obj):
         return obj.children.name
+
     get_children.short_description = "Children"
+
 
 admin.site.register(ParentChildren, ParentChildrenAdmin)

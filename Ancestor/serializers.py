@@ -12,6 +12,7 @@ class PersonSerializer(serializers.ModelSerializer):
             'id': {'read_only': True}
         }
 
+
 class ParentChildrenSerializer(serializers.ModelSerializer):
     parent = PersonSerializer()
     parent_id = serializers.IntegerField()
