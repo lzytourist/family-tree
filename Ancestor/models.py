@@ -41,12 +41,12 @@ class Person(models.Model):
 class ParentChildren(models.Model):
     parent = models.ForeignKey(
         to=Person,
-        related_name='parent',
+        related_name='children',
         on_delete=models.PROTECT
     )
     children = models.ForeignKey(
         to=Person,
-        related_name='children',
+        related_name='parent',
         on_delete=models.PROTECT
     )
 
@@ -63,4 +63,14 @@ class ParentChildren(models.Model):
 
     class Meta:
         verbose_name = 'Parent Children'
-        unique_together = ('parent', 'children',)
+        constraints = [
+            models.UniqueConstraint(
+                name='parent_children_unique_key',
+                fields=('parent', 'children',),
+                violation_error_message='Relation already exists'
+            ),
+            models.CheckConstraint(
+                name='prevent_self_parenting',
+                check=~models.Q(children=models.F('parent'))
+            )
+        ]
