@@ -14,6 +14,10 @@ class PersonSerializer(serializers.ModelSerializer):
             'id': {'read_only': True}
         }
 
+    def create(self, validated_data):
+        validated_data['user_id'] = self.context['request'].user.pk
+        return super().create(validated_data)
+
 
 class ParentChildrenSerializer(serializers.ModelSerializer):
     parent = PersonSerializer(read_only=True)
