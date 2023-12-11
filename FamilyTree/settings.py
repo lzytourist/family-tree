@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
 
-    'Ancestor',
+    'FamilyBranch',
 ]
 
 MIDDLEWARE = [
