@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-
-    'Ancestor',
+    
+    'FamilyBranch',
 ]
 
 MIDDLEWARE = [

@@ -16,14 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib.auth.decorators import login_required
 
-from Ancestor.views import FamilyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
-    path('api/', include('Ancestor.urls')),
-    path('', login_required(FamilyView.as_view())),
+    path('api/', include('FamilyBranch.urls')),
 ]
