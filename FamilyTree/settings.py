@@ -26,6 +26,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = ['127.0.0.1', ]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,7 +43,9 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
 
-    'FamilyBranch',
+    'debug_toolbar',
+
+    'FamilyBranch.apps.FamilyBranchConfig',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'FamilyTree.urls'
@@ -134,7 +140,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ]
 }
 

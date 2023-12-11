@@ -1,3 +1,4 @@
 /.vscode
 /.idea
-
+/__py
+*__pycache__/
