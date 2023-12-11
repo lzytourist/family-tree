@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree with D3.js</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        /* HTML: <div class="loader"></div> */
+        .loader {
+            width: 80px;
+            aspect-ratio: 2;
+            --_g: no-repeat radial-gradient(circle closest-side, #add8e6 90%, #0000);
+            background: var(--_g) 0% 50%,
+            var(--_g) 50% 50%,
+            var(--_g) 100% 50%;
+            background-size: calc(100% / 3) 50%;
+            animation: l3 1s infinite linear;
+        }
+
+        @keyframes l3 {
+            20% {
+                background-position: 0% 0%, 50% 50%, 100% 50%
+            }
+            40% {
+                background-position: 0% 100%, 50% 0%, 100% 50%
+            }
+            60% {
+                background-position: 0% 50%, 50% 100%, 100% 0%
+            }
+            80% {
+                background-position: 0% 50%, 50% 50%, 100% 100%
+            }
+        }
+
+        .loader {
+            position: fixed;
+            visibility: hidden;
+            top: calc(50% - 40px);
+            left: calc(50% - 40px);
+        }
+
+        @keyframes l18 {
+            0%, 20% {
+                background-position: 20% 50%, 80% 50%
+            }
+            100% {
+                background-position: 80% 50%, 20% 50%
+            }
+        }
+
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 1px;
+        }
+
+        .node text {
+            font: 12px sans-serif;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1px;
+        }
+
+        text:hover {
+            opacity: 0.5;
+        }
+
+        body, #family-tree {
+            {#background-color: aliceblue;#}
+            margin: 0;
+            padding: 0;
+        }
+
+        .tooltip-info {
+            padding: 0 5px;
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="loader"></div>
+<div id="family-tree"></div>
+<script>
+    let tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("background-color", "lightblue")
+        .style("opacity", "0.8")
+        .text("Tooltip");
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    const aspect = width / height;
+
+    let svgContainer = d3.select('#family-tree')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    let svg = svgContainer.append("g")
+        .attr("transform", `translate(50, 0)`);
+
+    const updateBox = (targetWidth) => {
+
+            width = targetWidth;
+            height = svgContainer.node().getBoundingClientRect().width / aspect;
+
+            svgContainer.attr('width', width)
+            svgContainer.attr('height', height);
+    };
+
+    d3.select(window)
+        .on('resize', () => {
+            updateBox(svgContainer.node().getBoundingClientRect().width);
+        });
+
+    let root, duration = 500, nodeId = 0;
+    let treemap = d3.tree().size([height, width]);
+
+    const fetchData = async (parent_id) => {
+        document.querySelector('.loader').style.visibility = 'visible';
+        let data = {};
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/people/${parent_id}/children`, {
+                headers: new Headers({
+                    'Authorization': 'Token fd90c707661be0748016b44e17cd7775c972574a'
+                })
+            });
+
+            data = await response.json();
+        } catch (error) {
+            console.log('Unable to fetch data', error)
+        }
+
+        document.querySelector('.loader').style.visibility = 'hidden';
+
+        return data;
+    };
+
+    const collapse = (d) => {
+        if (d.children) {
+            d._children = d.children;
+            d._children.forEach(collapse);
+            d.children = null;
+        }
+    };
+
+    const init = async () => {
+        const flare = await fetchData(1);
+
+        root = d3.hierarchy(flare, d => d.children);
+        root.x0 = width / 2;
+        root.y0 = 10;
+
+        update(root);
+    };
+
+    const toggleChildren = async (parent) => {
+        if (parent.children) {
+            collapse(parent)
+        } else if (parent._children) {
+            parent.children = parent._children;
+            parent._children = null;
+        } else {
+            let children = await fetchData(parent.data.id);
+            if (children.children.length) {
+                const childNodes = children.children.map(child => d3.hierarchy(child));
+
+                childNodes.forEach(child => {
+                    child.parent = parent;
+                    child.depth = parent.depth + 1;
+                    child.height = parent.height - 1;
+                    child.children = null;
+                });
+
+                parent.children = childNodes;
+            } else {
+                parent.children = null;
+                alert('Children information not available');
+            }
+        }
+
+        update(parent);
+    };
+
+    const diagonal = (s, d) => {
+        return `M ${s.y} ${s.x} C ${(s.y + d.y) / 2} ${s.x}, ${(s.y + d.y) / 2} ${d.x}, ${d.y} ${d.x}`;
+    };
+
+    const update = (source) => {
+        let treeData = treemap(root);
+
+        let nodes = treeData.descendants();
+        let links = treeData.descendants().slice(1);
+
+        nodes.forEach(d => {
+            d.id = d.data.id;
+            d.y = d.depth * 180;
+        });
+
+        let node = svg.selectAll('g.node')
+            .data(nodes, d => d.id);
+
+        let nodeEnter = node.enter().append('g')
+            .attr('class', 'node')
+            .attr('transform', `translate(${source.y0}, ${source.x0})`)
+            .on('click', (d) => {
+                if (!d3.event.ctrlKey) {
+                    toggleChildren(d);
+                } else {
+                    console.log('Open me')
+                }
+            });
+
+        nodeEnter.append('circle')
+            .attr('class', 'node')
+            .attr('r', 0)
+            .style('fill', d => (d.children ? '#add8e6' : '#ffffff'));
+
+        nodeEnter.append('text')
+            .attr('dy', '0.50em')
+            .attr('y', 16)
+            .attr('text-anchor', 'middle')
+            .attr('title', d => d.data.name)
+            .on('mouseover', d => tooltip.style('visibility', 'visible').html(`<p class="tooltip-info">${d.data.name} - ${d.data.age}</p>`))
+            .on('mousemove', () => tooltip.style('top', (event.pageY - 30) + 'px').style('left', (event.pageX + 10) + 'px'))
+            .on('mouseout', () => tooltip.style('visibility', 'hidden'))
+            .text(d => d.data.name);
+
+        let nodeUpdate = nodeEnter.merge(node);
+
+        nodeUpdate
+            .transition()
+            .duration(duration)
+            .attr('transform', d => `translate(${d.y}, ${d.x})`);
+
+        nodeUpdate
+            .select('circle.node')
+            .attr('r', 8)
+            .attr('cursor', 'pointer')
+            .style('fill', d => (d.children ? '#add8e6' : '#ffffff'));
+
+        let nodeExit = node.exit()
+            .transition()
+            .duration(duration)
+            .attr('transform', d => `translate(${source.y}, ${source.x})`)
+            .remove();
+
+        nodeExit.select('circle')
+            .attr('r', 0);
+
+        nodeExit.select('text')
+            .style('fill-opacity', 0);
+
+        let link = svg.selectAll('path.link')
+            .data(links, d => d.id);
+
+        let linkEnter = link.enter().insert('path', "g")
+            .attr("class", "link")
+            .attr('d', () => {
+                let o = {x: source.x0, y: source.y0}
+                return diagonal(o, o);
+            });
+
+        let linkUpdate = linkEnter.merge(link);
+
+        linkUpdate.transition()
+            .duration(duration)
+            .attr('d', d => diagonal(d, d.parent));
+
+        link.exit()
+            .transition()
+            .duration(duration)
+            .attr('d', d => {
+                let o = {x: source.x, y: source.y};
+                return diagonal(o, o);
+            })
+            .remove();
+
+        nodes.forEach(d => {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        });
+    }
+
+    init();
+
+</script>
+</body>
+</html>
