@@ -42,10 +42,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
+    'corsheaders',
 
     'debug_toolbar',
 
     'FamilyBranch.apps.FamilyBranchConfig',
+    'Account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +60,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
 ]
 
 ROOT_URLCONF = 'FamilyTree.urls'
@@ -145,7 +152,12 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    'USER_ID_FIELD': 'username'
+    'USER_ID_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'Account.serializers.CustomUserSerializer',
+        'user': 'Account.serializers.CustomUserSerializer',
+        'current_user': 'Account.serializers.CustomUserSerializer',
+    }
 }
 
 APPEND_SLASH = False
