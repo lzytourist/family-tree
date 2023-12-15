@@ -7,13 +7,13 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 djoser = "*"
+django-debug-toolbar = "*"
+django-filter = "*"
+django-cors-headers = "*"
 mysqlclient = "*"
 python-dateutil = "*"
-django-filter = "*"
-django-debug-toolbar = "*"
-django-cors-headers = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.12"
+python_version = "3.11"
