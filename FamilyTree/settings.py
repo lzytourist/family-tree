@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
 
     'FamilyBranchAPI.apps.FamilyBranchAPIConfig',
-    'Account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -154,9 +153,9 @@ REST_FRAMEWORK = {
 DJOSER = {
     'USER_ID_FIELD': 'email',
     'SERIALIZERS': {
-        'user_create': 'Account.serializers.CustomUserSerializer',
-        'user': 'Account.serializers.CustomUserSerializer',
-        'current_user': 'Account.serializers.CustomUserSerializer',
+        'user_create': 'FamilyBranchAPI.serializers.CustomUserSerializer',
+        'user': 'FamilyBranchAPI.serializers.CustomUserSerializer',
+        'current_user': 'FamilyBranchAPI.serializers.CustomUserSerializer',
     }
 }
 

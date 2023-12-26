@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
-    path('api/', include('FamilyBranch.urls')),
+    path('api/', include('FamilyBranchAPI.urls')),
 ]
 
 if settings.DEBUG:
