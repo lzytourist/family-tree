@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
 
-    'FamilyBranch.apps.FamilyBranchConfig',
+    'FamilyBranchAPI.apps.FamilyBranchAPIConfig',
     'Account.apps.AccountConfig',
 ]
 

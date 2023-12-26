@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class FamilyBranchConfig(AppConfig):
+class FamilyBranchAPIConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'FamilyBranch'
+    name = 'FamilyBranchAPI'
 
     def ready(self):
-        import FamilyBranch.signals
+        import FamilyBranchAPI.signals
