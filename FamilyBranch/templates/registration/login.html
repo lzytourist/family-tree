@@ -1,0 +1,46 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="ui middle aligned center aligned grid padded">
+        <div class="column">
+            <div class="ui raised padded text container segment">
+                <h2 class="ui black image header">
+                    <div class="content">
+                        Login
+                    </div>
+                </h2>
+                <form class="ui large form" method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="ui stacked segment">
+                        {% if form.errors %}
+                            <div class="ui error message" style="display: block">
+                                <ul class="list">
+                                    {% for err in form.non_field_errors %}
+                                        <li>{{ err }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                {{ form.username }}
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                {{ form.password }}
+                            </div>
+                        </div>
+                        <button type="submit" class="ui fluid large violet submit button">Log in</button>
+                    </div>
+                </form>
+                <div class="ui message">
+                    New to us? <a href="{% url 'register' %}">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

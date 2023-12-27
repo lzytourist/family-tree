@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
 
-from .models import Person
+from FamilyBranch.models import Person
 from .serializers import PersonRelationSerializer, PersonSerializer
 
 

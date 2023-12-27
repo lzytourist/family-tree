@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
-from .models import Person
+from FamilyBranch.models import Person
 
 
 class PersonRelationSerializer(serializers.ModelSerializer):

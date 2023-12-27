@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
 
     'FamilyBranchAPI.apps.FamilyBranchAPIConfig',
+    'FamilyBranch.apps.FamilyBranchConfig',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,4 @@ DJOSER = {
 }
 
 APPEND_SLASH = False
+LOGIN_REDIRECT_URL='/'

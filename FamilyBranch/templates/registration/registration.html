@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Registration | {% endblock %}
+
+{% block style %}
+    <style>
+        .errorlist {
+            list-style: none;
+            color: orangered;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="ui middle aligned center aligned grid padded">
+        <div class="column">
+            <div class="ui raised padded text container segment">
+                <h2 class="ui black image header">
+                    <div class="content">
+                        Register
+                    </div>
+                </h2>
+                <form class="ui large form" method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <div class="ui stacked segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                {{ form.first_name }}
+                            </div>
+                            {% if form.first_name.errors %}
+                                <p class="error-message">{{ form.first_name.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                {{ form.last_name }}
+                            </div>
+                            {% if form.last_name.errors %}
+                                <p class="error-message">{{ form.last_name.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="envelope icon"></i>
+                                {{ form.email }}
+                            </div>
+                            {% if form.email.errors %}
+                                <p class="error-message">{{ form.email.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                {{ form.password1 }}
+                            </div>
+                            {% if form.password1.errors %}
+                                <p class="error-message">{{ form.password1.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                {{ form.password2 }}
+                            </div>
+                            {% if form.password2.errors %}
+                                <p class="error-message">{{ form.password2.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="ui fluid large violet submit button">Register</button>
+                    </div>
+                </form>
+                <div class="ui message">
+                    Already registered? <a href="{% url 'login' %}">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

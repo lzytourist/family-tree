@@ -24,6 +24,8 @@ urlpatterns = [
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
     path('api/', include('FamilyBranchAPI.urls')),
+    path('', include('FamilyBranch.urls')),
+    path('user/', include('django.contrib.auth.urls'))
 ]
 
 if settings.DEBUG:

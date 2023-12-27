@@ -6,4 +6,4 @@ class FamilyBranchAPIConfig(AppConfig):
     name = 'FamilyBranchAPI'
 
     def ready(self):
-        import FamilyBranchAPI.signals
+        import FamilyBranch.signals
