@@ -1,8 +1,11 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from os.path import isfile
 
 from django.db import models
 from django.contrib.auth import get_user_model
+from faker import Faker, Factory
+from PIL import Image
 
 
 class PersonManager(models.Manager):
@@ -39,6 +42,7 @@ class Person(models.Model):
     gender = models.CharField(max_length=10, choices=Gender.choices, null=True, blank=True)
     nationality = models.CharField(max_length=50, null=True, blank=True)
     date_of_death = models.DateField(null=True, blank=True)
+    image = models.ImageField(upload_to='static/person_images/', null=True, blank=True)
 
     father = models.ForeignKey(
         to='self',
@@ -77,6 +81,41 @@ class Person(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        super().save(args, kwargs)
+
+        if self.image is not None:
+            try:
+                img = Image.open(self.image.path)
+
+                aspect_ratio = img.width / img.height
+                height = 300
+                width = round(aspect_ratio * height)
+
+                resized_img = img.resize((width, height))
+                resized_img.save(self.image.path)
+            except ValueError:
+                pass
+
     class Meta:
         verbose_name = 'Person'
         verbose_name_plural = 'People'
+
+
+def generate_fake_data(email, amount):
+    try:
+        user = get_user_model().objects.get(email=email)
+
+        fake = Faker()
+
+        people = []
+        for _ in range(amount):
+            people.append(
+                Person(
+                    user=user,
+                    name=fake.name()
+                )
+            )
+
+    except get_user_model().DoesNotExist:
+        print('User does not exists')

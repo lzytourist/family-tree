@@ -12,8 +12,16 @@ class HomeView(LoginRequiredMixin, View):
     login_url = '/user/login/'
 
     def get(self, request):
-        ancestor = Person.objects.get_root_ancestor(request.user.pk)
-        return render(request, self.template_name, {'parent_id': ancestor.pk})
+        if request.GET.get('person_id') is not None:
+            parent_id = request.GET.get('person_id')
+        else:
+            try:
+                person = Person.objects.filter(user_id=request.user.pk).first()
+                ancestor = Person.objects.get_root_ancestor(person.pk)
+                parent_id = ancestor.pk
+            except Person.DoesNotExist:
+                parent_id = None
+        return render(request, self.template_name, {'parent_id': parent_id})
 
 
 class RegistrationView(View):
@@ -28,12 +36,12 @@ class RegistrationView(View):
         if form.is_valid():
             user = form.save()
 
-            group = Group.objects.get(name='User')
-            user.groups.add(group)
-
             user.is_staff = True
             user.username = form.cleaned_data.get('email')
             user.save()
+
+            group = Group.objects.get(name='User')
+            user.groups.add(group)
 
             return redirect('/user/login')
         return render(request, self.template_name, {'form': form})

@@ -1,26 +1,18 @@
 {% extends 'base.html' %}
 
-{% block style %}
-    <style>
-        .node circle {
-            fill: #fff;
-            stroke: steelblue;
-            stroke-width: 1px;
-        }
-    </style>
-{% endblock %}
-
 {% block content %}
     <div class="ui modal" id="personModal">
         <i class="close icon"></i>
         <div class="header">
-            Modal Header
+            Person Details
         </div>
         <div class="content">
-            <p>Person information</p>
-            <div id="info"></div>
+            <div class="ui grid" id="info">
+
+            </div>
         </div>
     </div>
+
 
     <div id="svg" style="padding: 10px"></div>
 
@@ -39,12 +31,9 @@
             const marginBottom = 10;
             const marginLeft = 40;
 
-            // Rows are separated by dx pixels, columns by dy pixels. These names can be counter-intuitive
-            // (dx is a height, and dy a width). This because the tree must be viewed with the root at the
-            // “bottom”, in the data domain. The width of a column is based on the tree’s height.
             let root;
-            const dx = 25;
-            const dy = 180;
+            const dx = 30;
+            const dy = 200;
 
             const fetchData = async (parent_id) => {
                 try {
@@ -107,7 +96,6 @@
                             node.id = node.data.id;
                             return node;
                         });
-                        console.log(childNodes);
                         parent.children = childNodes;
                     }
                 }
@@ -115,11 +103,9 @@
                 update(event, parent);
             };
 
-            // Define the tree layout and the shape for links.
             const tree = d3.tree().nodeSize([dx, dy]);
             const diagonal = d3.linkHorizontal().x(d => d.y).y(d => d.x);
 
-            // Create the SVG container, a layer for the links and a layer for the nodes.
             const svg = d3.create("svg")
                 .attr("width", width)
                 .attr("height", dx)
@@ -128,19 +114,37 @@
 
             const gLink = svg.append("g")
                 .attr("fill", "none")
-                .attr("stroke", "#0056d2")
+                .attr("stroke", "#757575")
                 .attr("stroke-opacity", 0.6)
                 .attr("stroke-width", 1.8);
 
             const gNode = svg.append("g")
                 .attr("cursor", "pointer")
                 .attr("pointer-events", "all");
-            
+
             const getPersonInformation = async (person) => {
                 const response = await fetch(`/api/people/${person.data.id}`);
 
                 if (response.ok) {
-                    console.log(await response.json());
+                    const person = await response.json();
+
+                    const info = `
+                    <div class="eight wide column">
+                        <img src="${person?.image}" class="ui image" alt="Image of ${person.name}">
+                    </div>
+                    <div class="eight wide column">
+                        <p><strong>Name:</strong> ${person.name}</p>
+                        <p><strong>Father:</strong> <a href="/?person_id=${person.father?.id}">${person.father?.name ?? 'N/A'}</a></p>
+                        <p><strong>Mother:</strong> <a href="/?person_id=${person.mother?.id}">${person.mother?.name ?? 'N/A'}</a></p>
+                        <p><strong>Gender:</strong> ${person.gender.toUpperCase()}</p>
+                        <p><strong>Nationality:</strong> ${person?.nationality ?? 'N/A'}</p>
+                        <p><strong>Date of Birth:</strong> ${person?.date_of_birth ?? 'N/A'}</p>
+                        <p><strong>Age:</strong> ${person?.age ?? 'N/A`'}</p>
+                        <p><a href="/?person_id=${person.id}">Open family tree</a></p>
+                    </div>
+                    `;
+
+                    $('#info').html(info);
 
                     $('#personModal').modal('show');
                 }
@@ -167,15 +171,15 @@
                 });
 
                 const height = rightW.x - leftW.x + marginTop + marginBottom;
-                let newWidth = bottomH.y - topH.y + marginLeft + marginRight;
+                let newWidth = bottomH.y - topH.y + marginLeft + dy - 20;
 
-                if (width < newWidth) newWidth -= width;
-                else newWidth = 0;
+                if (width > newWidth) newWidth = width;
+                {#else newWidth = 0;#}
 
                 const transition = svg.transition()
                     .duration(duration)
                     .attr("height", height)
-                    .attr("viewBox", [-marginLeft, leftW.x - marginTop, width + newWidth, height])
+                    .attr("viewBox", [-marginLeft, leftW.x - marginTop, newWidth, height])
                     .tween("resize", window.ResizeObserver ? null : () => () => svg.dispatch("toggle"));
 
                 // Update the nodes…
@@ -197,7 +201,7 @@
 
                 nodeEnter.append("circle")
                     .attr("r", 3.5)
-                    .attr("fill", d => d._children ? "#6435c9" : "#3d01c9")
+                    .attr("fill", d => d._children ? "#6e6e6e" : "#6b6b6b")
                     .attr("stroke-width", 20);
 
                 nodeEnter.append("text")
@@ -250,15 +254,6 @@
                     d.y0 = d.y;
                 });
             }
-
-            const setLoading = () => {
-                svgContainer.style.cursor = 'wait';
-                gNode.attr('cursor', 'wait');
-                gLink.attr('cursor', 'wait');
-            };
-
-            // Do the first update to the initial configuration of the tree — where a number of nodes
-            // are open (arbitrarily selected as the root, plus nodes with 7 letters).
 
             return svg.node();
         }

@@ -12,6 +12,9 @@ django-filter = "*"
 django-cors-headers = "*"
 mysqlclient = "*"
 python-dateutil = "*"
+pillow = "*"
+faker = "*"
+factory-boy = "*"
 
 [dev-packages]
 

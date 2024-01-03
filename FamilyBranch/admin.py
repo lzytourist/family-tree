@@ -12,7 +12,7 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ['user', 'name', 'gender']
         }),
         ('Additional info', {
-            'fields': ('father', 'mother', 'dob', 'date_of_death', 'nationality')
+            'fields': ('father', 'mother', 'dob', 'date_of_death', 'nationality', 'image')
         }),
     )
     search_fields = ('name', 'age', 'gender', 'father', 'mother')
@@ -34,7 +34,7 @@ class PersonAdmin(admin.ModelAdmin):
                     'fields': ['name', 'gender']
                 }),
                 ('Additional info', {
-                    'fields': ('father', 'mother', 'dob', 'date_of_death', 'nationality')
+                    'fields': ('father', 'mother', 'dob', 'date_of_death', 'nationality', 'image')
                 }),
             )
         return fieldsets

@@ -12,6 +12,7 @@ class RegistrationForm(UserCreationForm):
             attrs={'class': 'form-control', 'placeholder': 'Password confirmation'})
 
     email = forms.EmailField(
+        label='Email address',
         widget=forms.EmailInput(attrs={'placeholder': 'Email address'})
     )
 

@@ -20,7 +20,7 @@ from django.urls import include, path
 from FamilyTree import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('user/', admin.site.urls),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
     path('api/', include('FamilyBranchAPI.urls')),
