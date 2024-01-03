@@ -100,22 +100,3 @@ class Person(models.Model):
     class Meta:
         verbose_name = 'Person'
         verbose_name_plural = 'People'
-
-
-def generate_fake_data(email, amount):
-    try:
-        user = get_user_model().objects.get(email=email)
-
-        fake = Faker()
-
-        people = []
-        for _ in range(amount):
-            people.append(
-                Person(
-                    user=user,
-                    name=fake.name()
-                )
-            )
-
-    except get_user_model().DoesNotExist:
-        print('User does not exists')
