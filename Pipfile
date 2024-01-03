@@ -14,7 +14,6 @@ mysqlclient = "*"
 python-dateutil = "*"
 pillow = "*"
 faker = "*"
-factory-boy = "*"
 
 [dev-packages]
 
