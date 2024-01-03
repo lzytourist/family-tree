@@ -1,6 +1,9 @@
 from django.db.models.query import Q
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
 
@@ -12,6 +15,9 @@ class PersonListView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
+    search_fields = ['name', 'gender']
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['name', 'gender', 'dob', 'date_of_death', 'father', 'mother', 'nationality']
 
     def get_queryset(self):
         if self.request.method == 'GET':
