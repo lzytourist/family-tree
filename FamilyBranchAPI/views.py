@@ -47,10 +47,10 @@ class PersonRelationView(RetrieveAPIView):
             }
 
             if person.gender == Person.Gender.MALE:
-                children = person.children_as_father.order_by('dob').all()
+                children = person.children_as_father.order_by('child_no').all()
                 data['children'] = PersonRelationSerializer(children, many=True).data
             else:
-                children = person.children_as_mother.order_by('dob').all()
+                children = person.children_as_mother.order_by('child_no').all()
                 data['children'] = PersonRelationSerializer(children, many=True).data
 
             if person.father_id:

@@ -43,6 +43,7 @@ class Person(models.Model):
     nationality = models.CharField(max_length=50, null=True, blank=True)
     date_of_death = models.DateField(null=True, blank=True)
     image = models.ImageField(upload_to='static/person_images/', null=True, blank=True)
+    child_no = models.PositiveSmallIntegerField(null=True, blank=True, default=1)
 
     father = models.ForeignKey(
         to='self',
