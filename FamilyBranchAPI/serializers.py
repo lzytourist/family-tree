@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from FamilyBranch.models import Person
 
@@ -20,7 +21,8 @@ class PersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = ['id', 'name', 'gender', 'dob', 'date_of_birth', 'date_of_death', 'age', 'nationality', 'father', 'mother', 'father_id',
+        fields = ['id', 'name', 'gender', 'dob', 'date_of_birth', 'date_of_death', 'age', 'nationality', 'father',
+                  'mother', 'father_id',
                   'mother_id', 'image', 'created_at', 'updated_at']
         extra_kwargs = {
             'age': {'read_only': True},
@@ -38,6 +40,12 @@ class PersonSerializer(serializers.ModelSerializer):
 
 
 class CustomUserSerializer(UserCreateSerializer):
+    email = serializers.CharField(max_length=200, validators=[
+        UniqueValidator(
+            queryset=get_user_model().objects.all()
+        )
+    ])
+
     class Meta(UserCreateSerializer.Meta):
         model = get_user_model()
         fields = ('id', 'email', 'password', 'first_name', 'last_name')
