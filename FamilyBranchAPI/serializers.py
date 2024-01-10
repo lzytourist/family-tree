@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -57,4 +58,10 @@ class CustomUserSerializer(UserCreateSerializer):
 
     def create(self, validated_data):
         validated_data['username'] = validated_data['email']
-        return super().create(validated_data)
+        validated_data['is_staff'] = True
+        user = super().create(validated_data)
+
+        group = Group.objects.get(name='User')
+        user.groups.add(group)
+
+        return user
