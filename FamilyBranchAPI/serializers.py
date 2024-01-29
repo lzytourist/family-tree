@@ -24,7 +24,7 @@ class PersonSerializer(serializers.ModelSerializer):
         model = Person
         fields = ['id', 'name', 'gender', 'dob', 'date_of_birth', 'date_of_death', 'age', 'nationality', 'father',
                   'mother', 'father_id',
-                  'mother_id', 'image', 'created_at', 'updated_at']
+                  'mother_id', 'image', 'child_no', 'created_at', 'updated_at']
         extra_kwargs = {
             'age': {'read_only': True},
             'id': {'read_only': True},

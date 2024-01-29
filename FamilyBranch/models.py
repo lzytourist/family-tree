@@ -83,7 +83,7 @@ class Person(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        super().save(args, kwargs)
+        super().save(*args, **kwargs)
 
         if self.image is not None:
             try:
