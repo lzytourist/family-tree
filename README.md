@@ -15,3 +15,6 @@
 - Import `User` model `from django.contrib.auth.models import User`
 - Get your registered user `user = User.objects.get(email=registration_email)`
 - Generate data `data = PersonFactory(user=user, depth=5)`.
+
+## `main` branch is under development and `v1` contains a working solution.
+https://github.com/lzytourist/family-tree/tree/v1
